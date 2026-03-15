@@ -106,6 +106,10 @@ package-lock.json
 .agent/
 skills-lock.json
 
+# OpenClaw State and Config (NEVER COMMIT)
+.openclaw/
+.openclaw-dev/
+
 # Local iOS signing overrides
 apps/ios/LocalSigning.xcconfig
 
