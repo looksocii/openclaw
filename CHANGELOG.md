@@ -4,6 +4,10 @@ Docs: https://docs.openclaw.ai
 
 ## Unreleased
 
+### Breaking
+
+- Config: remove legacy public config aliases such as `talk.voiceId` / `talk.apiKey`, `agents.*.sandbox.perSession`, `browser.ssrfPolicy.allowPrivateNetwork`, `hooks.internal.handlers`, and channel/group `allow` toggles in favor of the canonical public paths and `enabled`, while keeping load-time compatibility and `openclaw doctor --fix` migration support for existing configs. Thanks @vincentkoc.
+
 ### Changes
 
 - Providers/OpenAI Codex: add forward-compat `openai-codex/gpt-5.4-mini` synthesis across provider runtime, model catalog, and model listing so Codex mini works before bundled Pi catalog updates land.
@@ -23,6 +27,7 @@ Docs: https://docs.openclaw.ai
 - Memory/dreaming (experimental): add opt-in weighted short-term recall promotion to `MEMORY.md`, managed dreaming modes (`off|core|rem|deep`), and a `/dreaming` command plus Dreams UI so durable memory promotion can run on background cadence without manual scheduling. (#60569) Thanks @vignesh07.
 - Agents/system prompts: add an internal cache-prefix boundary across Anthropic-family, OpenAI-family, Google, and CLI transport shaping so stable system-prompt prefixes stay reusable without leaking internal cache markers to provider payloads. (#59054) Thanks @coletebou and @vincentkoc.
 - Docs/memory: add a dedicated Dreaming concept page, expand Memory overview with the Dreaming model, and link Dreaming from further reading to document the experimental opt-in consolidation workflow. Thanks @vignesh07.
+- Agents/cache prefixes: route compaction, OpenAI WebSocket HTTP fallback, and later-turn embedded session reuse through the same cache-safe prompt shaping path so Anthropic-family and OpenAI-family requests keep stable prompt bytes across follow-up turns and fallback transport changes. (#60691) Thanks @vincentkoc.
 
 ### Fixes
 
@@ -126,6 +131,7 @@ Docs: https://docs.openclaw.ai
 - Plugins/Kimi Coding: keep native Anthropic tool payloads on the Kimi coding endpoint while still parsing tagged tool-call text on the response path, so tool calls execute again instead of echoing raw markup. (#60391) Thanks @Eric-Guo.
 - Plugins/install: preserve `--dangerously-force-unsafe-install` across linked plugin probes and linked hook-pack fallback probes so local `--link` installs honor the documented unsafe override. (#60624) Thanks @JerrettDavis.
 - Auto-reply/reasoning: preserve reasoning and compaction markers while coalescing adjacent reply blocks so hidden reasoning does not leak when mixed with visible text on channels like WhatsApp. Thanks @mcaxtr.
+- Exec/gateway: reuse durable exact-command `allow-always` approvals in allowlist mode so repeated gateway exec reruns stop re-prompting or failing on allowlist misses. (#59880) Thanks @luoyanglang.
 
 ## 2026.4.2
 
@@ -615,6 +621,9 @@ Docs: https://docs.openclaw.ai
 - Plugins/Matrix: encrypt E2EE image thumbnails with `thumbnail_file` while keeping unencrypted-room previews on `thumbnail_url`, so encrypted Matrix image events keep thumbnail metadata without leaking plaintext previews. (#54711) thanks @frischeDaten.
 - Telegram/forum topics: keep native `/new` and `/reset` routed to the active topic by preserving the topic target on forum-thread command context. (#35963)
 - Status/port diagnostics: treat single-process dual-stack loopback gateway listeners as healthy in `openclaw status --all`, suppressing false "port already in use" conflict warnings. (#53398) Thanks @DanWebb1949.
+- CLI/Docker: treat loopback private-host CLI gateway connects as local for silent pairing auto-approval, while keeping remote backend and public-host CLI connects behind pairing. (#55113) Thanks @sar618.
+
+## 2026.3.24
 
 ### Breaking
 
